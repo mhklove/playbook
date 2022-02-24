@@ -1,0 +1,47 @@
+---
+ - hosts: all
+   ignore_errors: yes
+   become: yes
+   tasks:
+    - name: create user
+      user:
+        name: blanche
+        comment: blanche balefou
+
+    - name: create directory
+      file:
+       path: /home/vagrant/devops-jenkin
+       owner: blanche
+       state: directory
+       mode: "0777"
+
+    - name: create file
+      file:
+       path: /home/vagrant/ansible-devops
+       owner: blanche
+       state: touch
+       mode: "0600"
+
+    - name: install curl
+      yum:
+       name: curl
+       state: present
+      when: ansible_distribution == "Cent0S"
+
+    - name: install curl
+      apt:
+       name: curl
+       state: present
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: Upgrade server
+      yum:
+       name: '*'
+       state: latest
+      when: ansible_distribution == "CentOS"
+  
+    - name: Upgrade server
+      apt:
+       name: '*'
+       state: present
+      when: ansible_distribution == "Ubuntu" 
